@@ -33,7 +33,7 @@ addEventListener('fetch', event => {
     // Else, use preloaded or fetch
     let response = await event.preloadResponse || await fetch(event.request);
 
-    cacheResponse(e.request, response);
+    cacheResponse(event.request, response);
 
     return response;
   }());
