@@ -26,6 +26,7 @@ const cacheResponse = (request, response) => {
 // Fetch
 addEventListener('fetch', event => {
   event.respondWith(async function() {
+    // Only handle resources that belong to this page.
     if (event.request.url.startsWith(`${self.origin}/sw-preload-demo`)) {
       // Respond from the cache if we can
       const cachedResponse = await caches.match(event.request);
