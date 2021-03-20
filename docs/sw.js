@@ -8,6 +8,21 @@ addEventListener('activate', e => {
   }());
 });
 
+const cacheName = 'sw-demo';
+
+// Cache
+const cacheResponse = (request, response) => {
+  const clone = response.clone();
+  caches
+    .open(cacheName)
+    .then(cache => {
+      if (clone.ok) {
+        cache.put(request, clone);
+        return clone.ok;
+      }
+    });
+};
+
 // Fetch
 addEventListener('fetch', event => {
   event.respondWith(async function() {
@@ -15,12 +30,12 @@ addEventListener('fetch', event => {
     const cachedResponse = await caches.match(event.request);
     if (cachedResponse) return cachedResponse;
 
-    // Else, use the preloaded response, if it's there
-    const response = await event.preloadResponse;
-    if (response) return response;
+    // Else, use preloaded or fetch
+    let response = await event.preloadResponse || await fetch(event.request);
 
-    // Else try the network.
-    return fetch(event.request);
+    cacheResponse(response);
+
+    return response;
   }());
 });
 
