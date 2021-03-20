@@ -26,16 +26,18 @@ const cacheResponse = (request, response) => {
 // Fetch
 addEventListener('fetch', event => {
   event.respondWith(async function() {
-    // Respond from the cache if we can
-    const cachedResponse = await caches.match(event.request);
-    if (cachedResponse) return cachedResponse;
+    if (event.request.url.startsWith(`${self.origin}/sw-preload-demo`)) {
+      // Respond from the cache if we can
+      const cachedResponse = await caches.match(event.request);
+      if (cachedResponse) return cachedResponse;
 
-    // Else, use preloaded or fetch
-    let response = await event.preloadResponse || await fetch(event.request);
+      // Else, use preloaded or fetch
+      let response = await event.preloadResponse || await fetch(event.request);
 
-    cacheResponse(event.request, response);
+      cacheResponse(event.request, response);
 
-    return response;
+      return response;
+    }
   }());
 });
 
