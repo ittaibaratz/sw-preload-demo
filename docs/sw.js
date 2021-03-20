@@ -39,6 +39,8 @@ addEventListener('fetch', event => {
 
       return response;
     }
+    // Fetch everything else.
+    return fetch(event.request);
   }());
 });
 
